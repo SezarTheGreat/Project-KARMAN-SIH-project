@@ -1,6 +1,7 @@
 import os
 from datetime import datetime
 from typing import List, Optional
+from unittest import result
 from fastapi import FastAPI, Form, Request, Response, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -163,11 +164,11 @@ Download PDF: {fallback_pdf}</Body>
     </Message>
 </Response>"""
         return Response(content=fallback_xml, media_type="application/xml")
+    skill_name = result["extracted_skill"].replace("&", "&amp;")
+    status_name = result["pm_ajay_eligibility"]["status"].replace("&", "&amp;")
+    grant_type = result["pm_ajay_eligibility"]["grant_type"].replace("&", "&amp;")
+    nsqf_level = result["nsqf_mapping"]["level"].replace("&", "&amp;")
 
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
-        skill_name = result["extracted_skill"].replace("&", "&amp;")
-        status_name = result["pm_ajay_eligibility"]["status"].replace("&", "&amp;")
-        grant_type = result["pm_ajay_eligibility"]["grant_type"].replace("&", "&amp;")
-        nsqf_level = result["nsqf_mapping"]["level"].replace("&", "&amp;")
