@@ -55,12 +55,12 @@ def process_beneficiary_query(user_query: str, phone_number: str = "919876543210
     """
     # 1. Retrieve Vector Evidence
     vector_match = search_policy_docs(user_query)
-    
-    # 2. Extract Skill & Intent Analysis
+
+    # 2. Extract Skill and Intent Analysis
     query_lower = user_query.lower()
-    
+
     if any(w in query_lower for w in ["silai", "sew", "tailor", "machine", "stitching", "kapda"]):
-        extracted_skill = "Tailoring & Sewing"
+        extracted_skill = "Tailoring and Sewing"
         nsqf_level = "NSQF Level 4"
         nsqf_role = "Sewing Machine Operator (AMH/Q0301)"
         rpl_rec = True
@@ -72,19 +72,19 @@ def process_beneficiary_query(user_query: str, phone_number: str = "919876543210
         translated_text = "Knows basic sewing; needs financial aid for a motorized sewing machine."
         rule_snippet = "Section 4.2 (GIA Micro-Enterprises): Financial assistance up to ₹50,000 per beneficiary for purchasing self-employment equipment (motorized sewing machine kit)."
     elif any(w in query_lower for w in ["mechanic", "bike", "motorcycle", "repair", "garage", "gaadi"]):
-        extracted_skill = "Automotive Repair & Servicing"
+        extracted_skill = "Automotive Repair and Servicing"
         nsqf_level = "NSQF Level 4"
         nsqf_role = "Two Wheeler Service Technician (ASC/Q1401)"
         rpl_rec = True
-        grant_type = "Skill Certification & Tool Kit Grant"
+        grant_type = "Skill Certification and Tool Kit Grant"
         eligible_amt = "₹35,000"
         status = "RPL Track"
         default_name = name or "Ramesh Kumar"
         default_district = district or "Varanasi"
-        translated_text = "Informal two-wheeler mechanic for 5 years; seeks NSQF trade certificate & toolkit."
+        translated_text = "Informal two-wheeler mechanic for 5 years; seeks NSQF trade certificate and toolkit."
         rule_snippet = "Section 3.1 (RPL Certification): Informal workers with pre-existing repair experience receive direct 3-day RPL assessment and toolkit grant."
     elif any(w in query_lower for w in ["solar", "bijli", "electric", "wire", "panel"]):
-        extracted_skill = "Solar PV & Electrical Installation"
+        extracted_skill = "Solar PV and Electrical Installation"
         nsqf_level = "NSQF Level 4"
         nsqf_role = "Solar Panel Technician (SGJ/Q0101)"
         rpl_rec = False
@@ -98,7 +98,7 @@ def process_beneficiary_query(user_query: str, phone_number: str = "919876543210
     else:
         extracted_skill = "General Vocational Artisan"
         nsqf_level = "NSQF Level 3"
-        nsqf_role = "Handicraft & General Trade Operator"
+        nsqf_role = "Handicraft and General Trade Operator"
         rpl_rec = True
         grant_type = "Micro-Enterprise Equipment Grant"
         eligible_amt = "₹25,000"
@@ -128,7 +128,7 @@ def process_beneficiary_query(user_query: str, phone_number: str = "919876543210
 
     # 4. Construct Final Payload adhering to API contract
     clean_id = re.sub(r'\D', '', phone_number) or "919876543210"
-    
+
     return {
         "applicant_id": clean_id,
         "name": default_name,
@@ -153,7 +153,7 @@ def process_beneficiary_query(user_query: str, phone_number: str = "919876543210
             "rule_snippet": rule_snippet
         },
         "roadmap_steps": [
-            f"Verify SC Category & Income eligibility for {default_name} at District Portal.",
+            f"Verify SC Category and Income eligibility for {default_name} at District Portal.",
             f"Register applicant for {nsqf_role} ({nsqf_level}).",
             f"Disburse {grant_type} ({eligible_amt}) upon verification."
         ]

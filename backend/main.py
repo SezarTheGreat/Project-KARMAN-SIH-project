@@ -98,7 +98,7 @@ def simulate_intake(req: IntakeRequest):
     pdf_filename = os.path.basename(pdf_path)
     result["generated_pdf_url"] = f"{PUBLIC_BASE_URL}/static/{pdf_filename}"
     result["timestamp"] = datetime.now().isoformat()
-    
+
     APPLICANTS_DB[phone] = result
     return result
 
@@ -113,31 +113,31 @@ async def twilio_whatsapp_webhook(request: Request):
         incoming_msg = form_data.get("Body", "").strip()
         from_number = form_data.get("From", "").replace("whatsapp:", "").strip()
         media_url = form_data.get("MediaUrl0", None)
-        
+
         if not incoming_msg and media_url:
             incoming_msg = "Voice Note Received: Seeking PM-AJAY Skill Development and Equipment Assistance."
         elif not incoming_msg:
             incoming_msg = "Mujhe silai aati hai, machine ke liye loan chahiye."
-            
+
         result = process_beneficiary_query(
             user_query=incoming_msg,
             phone_number=from_number
         )
-        
+
         pdf_path = generate_applicant_pdf(result)
         pdf_filename = os.path.basename(pdf_path)
         pdf_public_url = f"{PUBLIC_BASE_URL}/static/{pdf_filename}"
         result["generated_pdf_url"] = pdf_public_url
         result["timestamp"] = datetime.now().isoformat()
-        
+
         APPLICANTS_DB[from_number] = result
-        
+
         # Build TwiML XML Response
         skill_name = result["extracted_skill"]
         status_name = result["pm_ajay_eligibility"]["status"]
         grant_type = result["pm_ajay_eligibility"]["grant_type"]
         nsqf_level = result["nsqf_mapping"]["level"]
-        
+
         twiml_response = f"""<?xml version="1.0" encoding="UTF-8"?>
 <Response>
     <Message>
@@ -151,7 +151,7 @@ Download your dynamic PM-AJAY Beneficiary Roadmap PDF here:
     </Message>
 </Response>"""
         return Response(content=twiml_response, media_type="application/xml")
-        
+
     except Exception as e:
         # Fallback TwiML response
         fallback_pdf = f"{PUBLIC_BASE_URL}/static/Roadmap_919876543210.pdf"
@@ -167,3 +167,7 @@ Download PDF: {fallback_pdf}</Body>
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
+        skill_name = result["extracted_skill"].replace("&", "&amp;")
+        status_name = result["pm_ajay_eligibility"]["status"].replace("&", "&amp;")
+        grant_type = result["pm_ajay_eligibility"]["grant_type"].replace("&", "&amp;")
+        nsqf_level = result["nsqf_mapping"]["level"].replace("&", "&amp;")
