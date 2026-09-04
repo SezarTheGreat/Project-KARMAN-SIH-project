@@ -28,7 +28,7 @@
 
 ### 🤖 2. In-App Dual Bot Channels & Direct Deep Links
 - **WhatsApp Cloud Bridge**: Direct launch to [`+1-555-203-7186`](https://wa.me/15552037186?text=Namaste%20Project%20KARMAN) with pre-filled handshake payload.
-- **Telegram Bot Bridge**: Instant connect to [`@KarmanSkillBot`](https://t.me/KarmanSkillBot).
+- **Telegram Bot Bridge**: Instant connect to [`@projectkarmancareerguidancebot`](https://t.me/projectkarmancareerguidancebot).
 - **Dual In-App Tabs**: Switch between WhatsApp and Telegram channel simulations with color-coded UI badges.
 
 ### ⚡ 3. Real Backend API Integration
@@ -145,7 +145,7 @@ The frontend automatically communicates with the backend on `http://localhost:80
 ```env
 VITE_API_URL=https://sih-work.onrender.com
 VITE_WHATSAPP_BOT_URL=https://wa.me/15552037186
-VITE_TELEGRAM_BOT_URL=https://t.me/KarmanSkillBot
+VITE_TELEGRAM_BOT_URL=https://t.me/projectkarmancareerguidancebot
 ```
 
 ---

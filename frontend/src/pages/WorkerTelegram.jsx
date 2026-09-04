@@ -19,13 +19,13 @@ export default function WorkerTelegram() {
         </div>
 
         <a 
-          href="https://t.me/KarmanSkillBot" 
+          href="https://t.me/projectkarmancareerguidancebot" 
           target="_blank" 
           rel="noopener noreferrer"
           className="bg-[#41658a] hover:bg-[#345272] text-white font-bold text-xs px-5 py-3 rounded-xl font-mono inline-flex items-center gap-2 shadow-lg shadow-[#41658a]/20"
         >
           <Send className="w-4 h-4" />
-          <span>Launch @KarmanSkillBot</span>
+          <span>Launch @projectkarmancareerguidancebot</span>
         </a>
       </div>
 

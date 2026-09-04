@@ -273,7 +273,7 @@ export default function PrototypeViewer() {
                           <span>WhatsApp Bot</span>
                           <span style={{ fontSize: '.68rem', background: '#E2F7EB', color: '#1EBE5D', padding: '2px 6px', borderRadius: '6px' }}>LIVE ↗</span>
                         </a>
-                        <a href="https://t.me/KarmanSkillBot" target="_blank" rel="noreferrer" className="channel-link-item tg" title="Open official Telegram Bot">
+                        <a href="https://t.me/projectkarmancareerguidancebot" target="_blank" rel="noreferrer" className="channel-link-item tg" title="Open official Telegram Bot">
                           <span>Telegram Bot</span>
                           <span style={{ fontSize: '.68rem', background: '#E6EEF7', color: '#1B88BD', padding: '2px 6px', borderRadius: '6px' }}>LIVE ↗</span>
                         </a>
@@ -493,7 +493,7 @@ export default function PrototypeViewer() {
                               MULTILINGUAL AI ASSISTANT
                             </span>
                             <h2 style={{ fontSize: '1.8rem', marginTop: '4px' }}>
-                              {activeBotChannel === 'whatsapp' ? 'WhatsApp AI Bot (+1-555-203-7186)' : 'Telegram AI Bot (@KarmanSkillBot)'}
+                              {activeBotChannel === 'whatsapp' ? 'WhatsApp AI Bot (+1-555-203-7186)' : 'Telegram AI Bot (@projectkarmancareerguidancebot)'}
                             </h2>
                             <p style={{ color: '#3a4763', marginTop: '6px', fontSize: '.9rem' }}>
                               Voice-first &amp; text check-ins for beneficiaries who would rather talk than type — synced live.
@@ -514,13 +514,13 @@ export default function PrototypeViewer() {
                             className={`channel-tab ${activeBotChannel === 'telegram' ? 'active telegram' : ''}`}
                             onClick={() => setActiveBotChannel('telegram')}
                           >
-                            <span>Telegram Bot (@KarmanSkillBot)</span>
+                            <span>Telegram Bot (@projectkarmancareerguidancebot)</span>
                           </button>
                           <div style={{ marginLeft: 'auto', display: 'flex', gap: '8px' }}>
                             <a href="https://wa.me/15552037186?text=Namaste%20Project%20KARMAN" target="_blank" rel="noreferrer" className="btn-whatsapp-pill">
                               Open in WhatsApp ↗
                             </a>
-                            <a href="https://t.me/KarmanSkillBot" target="_blank" rel="noreferrer" className="btn-telegram-pill">
+                            <a href="https://t.me/projectkarmancareerguidancebot" target="_blank" rel="noreferrer" className="btn-telegram-pill">
                               Open in Telegram ↗
                             </a>
                           </div>
@@ -532,7 +532,7 @@ export default function PrototypeViewer() {
                               <img src="/images/cat_bot.jpg" alt="Avatar" className="tg-avatar-img" />
                               <div>
                                 <h5 style={{ fontSize: '.92rem', fontWeight: 700 }}>
-                                  {activeBotChannel === 'whatsapp' ? 'WhatsApp Assistant' : 'KarmanSkillBot'}
+                                  {activeBotChannel === 'whatsapp' ? 'WhatsApp Assistant' : 'projectkarmancareerguidancebot'}
                                 </h5>
                                 <span style={{ fontSize: '.72rem', color: activeBotChannel === 'whatsapp' ? '#1ebe5d' : 'var(--green-text)', fontWeight: 600 }}>
                                   ● online · replies in seconds

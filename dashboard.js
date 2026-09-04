@@ -630,7 +630,7 @@ function switchBotChannel(channel) {
       headerBanner.style.borderColor = '#229ED9';
     }
     if (shellHeader) shellHeader.className = 'tg-header';
-    if (statusName) statusName.innerText = 'Telegram AI Bot (@KarmanSkillBot)';
+    if (statusName) statusName.innerText = 'Telegram AI Bot (@projectkarmancareerguidancebot)';
     if (statusIndicator) {
       statusIndicator.style.color = '#1B88BD';
       statusIndicator.innerText = '● Online · Telegram Bot API Live';

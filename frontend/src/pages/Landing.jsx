@@ -122,7 +122,7 @@ export default function Landing() {
 
           <div className="flex flex-col gap-3 font-mono text-xs w-full sm:w-auto">
             <a 
-              href="https://t.me/KarmanSkillBot"
+              href="https://t.me/projectkarmancareerguidancebot"
               target="_blank"
               rel="noopener noreferrer"
               className="bg-[#41658a] hover:bg-[#345272] text-white font-bold px-6 py-3 rounded-xl transition flex items-center justify-center gap-2 shadow-lg"
