@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="KARMAN Career Workspace — skill mapping, readiness scoring and roadmap dashboard.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23162035'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='18' font-weight='700' fill='%23F4C542' text-anchor='middle'%3EK%3C/text%3E%3C/svg%3E">
+<title>Dashboard — KARMAN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="dash-frame-wrapper">
+  <div class="dashboard-3col">
+    
+    <!-- 1. LEFT SIDEBAR NAVIGATION WITH SLIDER RESIZER -->
+    <aside class="dash-left-sidebar" id="main-sidebar">
+      <!-- Draggable Slider Handle on Sidebar Edge -->
+      <div class="sidebar-resizer" id="sidebar-resizer" title="Drag to minimize or maximize sidebar width (Double click to reset)"></div>
+
+      <div>
+        <div class="sidebar-brand-row">
+          <a class="sidebar-brand" href="index.html" style="cursor:pointer; text-decoration:none;" title="Back to home">
+            <span class="logo-badge">K</span>
+            <span>KARMAN</span>
+          </a>
+          <button class="btn-sidebar-toggle" id="btn-sidebar-toggle" onclick="toggleSidebar()" title="Collapse / Expand Sidebar (or drag edge slider)">
+            <svg id="sidebar-toggle-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+        </div>
+
+        <nav class="sidebar-menu" aria-label="Primary">
+          <button class="sidebar-item active" id="nav-dashboard" onclick="showPage('dashboard')" aria-current="page">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+            <span class="lbl">Dashboard</span>
+          </button>
+          
+          <button class="sidebar-item" id="nav-analyzer" onclick="showPage('analyzer')">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 15l2 2 4-4"/></svg>
+            <span class="lbl">Resume Analyzer</span>
+          </button>
+          
+          <button class="sidebar-item" id="nav-projects" onclick="showPage('projects')">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18h6M10 22h4M12 2a6 6 0 0 0-4 10.5c.6.5 1 1.3 1 2.1V16h6v-1.4c0-.8.4-1.6 1-2.1A6 6 0 0 0 12 2z"/></svg>
+            <span class="lbl">Project Lab</span>
+          </button>
+          
+          <button class="sidebar-item" id="nav-roadmap" onclick="showPage('roadmap')">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="19" r="2.2"/><circle cx="18" cy="5" r="2.2"/><path d="M6 16.8V13a4 4 0 0 1 4-4h4a4 4 0 0 0 4-4"/></svg>
+            <span class="lbl">Career Roadmap</span>
+          </button>
+          
+          <button class="sidebar-item" id="nav-newsroom" onclick="showPage('newsroom')">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h13a3 3 0 0 1 3 3v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 8h8M8 12h8M8 16h4"/></svg>
+            <span class="lbl">Scheme Newsroom</span>
+          </button>
+          
+          <button class="sidebar-item" id="nav-telegram" onclick="showPage('telegram')">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 3 3 10.5l6 2.3M21 3l-3.5 17L11 15M21 3 9 13.4v5.1l3-3.1"/></svg>
+            <span class="lbl">Bot Assistant</span>
+          </button>
+          
+          <button class="sidebar-item" id="nav-builder" onclick="showPage('builder')">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/><path d="M9 13h6M9 17h6"/></svg>
+            <span class="lbl">Resume Builder</span>
+          </button>
+          
+          <button class="sidebar-item" id="nav-settings" onclick="showPage('settings')">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+            <span class="lbl">Settings</span>
+          </button>
+        </nav>
+
+        <!-- Direct External Links to WhatsApp & Telegram -->
+        <div class="sidebar-channel-section">
+          <span class="lbl-tiny">Live Connected Bots</span>
+          <div class="sidebar-channel-links">
+            <a href="https://wa.me/15552037186?text=Namaste%20Project%20KARMAN" target="_blank" class="channel-link-item wa" title="Open official WhatsApp Bot (+1-555-203-7186)">
+              <span>WhatsApp Bot</span>
+              <span style="font-size:.68rem; background:#E2F7EB; color:#1EBE5D; padding:2px 6px; border-radius:6px;">LIVE ↗</span>
+            </a>
+            <a href="https://t.me/KarmanSkillBot" target="_blank" class="channel-link-item tg" title="Open official Telegram Bot (@KarmanSkillBot)">
+              <span>Telegram Bot</span>
+              <span style="font-size:.68rem; background:#E6EEF7; color:#1B88BD; padding:2px 6px; border-radius:6px;">LIVE ↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-logout">
+        <button class="sidebar-item" onclick="localStorage.removeItem('karman_user'); localStorage.removeItem('karman_token'); window.location.href='login.html'">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+          <span class="lbl">Sign Out</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- 2. CENTER MAIN WORKSPACE -->
+    <main class="dash-center-main">
+      
+      <div class="center-topbar">
+        <div class="search-input-wrap">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input placeholder="Search skills, projects, schemes..." aria-label="Search skills, projects, schemes" id="main-search-input" />
+        </div>
+      </div>
+
+      <!-- PAGE 1: DASHBOARD -->
+      <div id="page-dashboard" class="page-view active">
+        <div class="center-hero-banner">
+          <div>
+            <span class="eyebrow" style="color:#2D3A54">CAREER WORKSPACE</span>
+            <h2>Good Morning, <span id="user-greeting-name">Arjun</span></h2>
+            <p>Welcome back! Your career readiness score is <strong id="hero-pct">68%</strong>.</p>
+            <button class="btn-banner" onclick="showPage('roadmap')">View Career Roadmap →</button>
+          </div>
+          <img src="images/study_hero.jpg" alt="Study Desk" class="banner-img-thumb">
+        </div>
+
+        <div style="margin-bottom:14px;">
+          <span class="eyebrow" style="font-weight:700">CAREER ROADMAP INTEL</span>
+        </div>
+
+        <div class="ov-grid" style="margin-bottom:28px;">
+          <!-- READINESS CARD -->
+          <div class="card" style="border:2px solid var(--navy-dark);">
+            <div class="role-row">
+              <div>
+                <span class="eyebrow">TARGET CAREER ROLE</span>
+                <h2 id="role-title">AI / ML Engineer</h2>
+              </div>
+              <select class="select-fake" id="role-select" onchange="changeRole(this.value)">
+                <option value="AI / ML Engineer">AI / ML Engineer</option>
+                <option value="Full-Stack Developer">Full-Stack Developer</option>
+                <option value="Data Engineer">Data Engineer</option>
+              </select>
+            </div>
+            <div class="readiness-row">
+              <span style="font-weight:600; font-size:.95rem;">Career Readiness Score</span>
+              <span class="pct" id="score-pct">68%</span>
+            </div>
+            <div class="progress-track" style="margin-top:9px;">
+              <span id="score-bar" style="width:68%;"></span>
+            </div>
+            <div class="stat-mini-row">
+              <div class="stat-mini"><div class="num" style="color:var(--green-text);" id="m-matched">7</div><div class="lbl">Skills Matched</div></div>
+              <div class="stat-mini"><div class="num" style="color:#8C651F;" id="m-strengthen">4</div><div class="lbl">To Strengthen</div></div>
+              <div class="stat-mini"><div class="num" style="color:var(--navy-dark);" id="m-rec">3</div><div class="lbl">Projects Rec.</div></div>
+            </div>
+          </div>
+
+          <!-- NEXT MOVE CARD -->
+          <div class="next-move">
+            <span class="eyebrow">YOUR NEXT MOVE</span>
+            <h3 id="next-title">Learn model deployment</h3>
+            <p id="next-desc">Your profile shows strong ML fundamentals but no container deployment experience.</p>
+            <div class="nested">
+              <span class="eyebrow">Recommended project</span>
+              <span class="nt" id="next-proj">Build an ML API using FastAPI and Docker</span>
+            </div>
+            <button class="btn-yellow-pill" style="margin-top:18px; align-self:flex-start;" onclick="showPage('projects')">Start Project Lab →</button>
+          </div>
+        </div>
+
+        <!-- CAREER ROADMAP TIMELINE STAGE TRACK -->
+        <div class="table-card" style="margin-bottom:28px;">
+          <div class="table-head-row">
+            <h4 style="font-size:1.05rem;">Career Roadmap Timeline</h4>
+            <button class="btn-navy-pill" style="padding:4px 12px; font-size:.75rem;" onclick="showPage('roadmap')">Full Roadmap →</button>
+          </div>
+
+          <div class="stage complete" style="margin-bottom:12px;">
+            <div class="rail-dot"><span class="d"></span><span class="ln"></span></div>
+            <div class="stage-card">
+              <div class="stage-top">
+                <span class="eyebrow" style="color:var(--green-text);">✓ STAGE 1 · COMPLETED (4 WEEKS)</span>
+              </div>
+              <h3 class="stage-title" style="font-size:1.1rem; margin-top:2px;">Core Programming & Database Foundation</h3>
+              <p style="font-size:.86rem; color:var(--ink-sub); margin-top:4px;">Python, SQL optimization, Git & GitHub workflows.</p>
+            </div>
+          </div>
+
+          <div class="stage progress">
+            <div class="rail-dot"><span class="d"></span><span class="ln"></span></div>
+            <div class="stage-card">
+              <div class="stage-top">
+                <span class="eyebrow" style="color:var(--navy-dark);">● STAGE 2 · IN PROGRESS (EST. 6 WEEKS)</span>
+              </div>
+              <h3 class="stage-title" style="font-size:1.1rem; margin-top:2px;">Applied Machine Learning & Algorithm Optimization</h3>
+              <p style="font-size:.86rem; color:var(--ink-sub); margin-top:4px;">Scikit-learn algorithms, Model Serving with FastAPI, Docker containerization.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- SCHEME NEWSROOM CARDS -->
+        <div class="embedded-newsroom">
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+            <div>
+              <span class="eyebrow" style="color:var(--blue-text);">SCHEME NEWSROOM</span>
+              <h2 style="font-size:1.5rem; margin-top:2px;">Policy Guidelines & Grants</h2>
+            </div>
+            <button class="btn-navy-pill" style="padding:4px 12px; font-size:.75rem;" onclick="showPage('newsroom')">View All Schemes →</button>
+          </div>
+
+          <div class="scheme-row gold" onclick="showPage('newsroom')">
+            <div class="info">
+              <div class="name">PM-AJAY — Equipment Grant</div>
+              <div class="desc">One-time capital support for tools and machinery, once a trade has been matched and verified through NSQF.</div>
+            </div>
+            <div class="amount">Up to ₹50,000</div>
+          </div>
+
+          <div class="scheme-row" onclick="showPage('newsroom')">
+            <div class="info">
+              <div class="name">Recognition of Prior Learning (RPL)</div>
+              <div class="desc">Fast-track certification for artisans with two or more years of practical experience.</div>
+            </div>
+            <div class="amount">No Cost</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE 2: RESUME ANALYZER -->
+      <div id="page-analyzer" class="page-view">
+        <div style="background:var(--blue-badge); border:1.5px solid var(--navy-dark); border-radius:16px; padding:24px 28px; margin-bottom:24px; display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <span class="eyebrow" style="color:var(--blue-text); font-weight:600;">RESUME ANALYZER</span>
+            <h2 style="font-size:1.8rem; margin-top:4px;">Resume Skill Gap & ATS Radar</h2>
+            <p style="color:var(--ink-sub); font-size:.88rem; margin-top:4px;">Live scanning against target industry roles via KARMAN ATS Engine.</p>
+          </div>
+          <img src="images/todo_sketch.jpg" alt="Checklist" style="width:110px; height:80px; object-fit:cover; border-radius:10px; border:2px solid var(--navy-dark);">
+        </div>
+
+        <div class="table-card dropzone" id="dropzone" style="border-style:dashed; text-align:center; padding:36px;"
+             ondragover="event.preventDefault(); dropzone.classList.add('drag-over')"
+             ondragleave="dropzone.classList.remove('drag-over')"
+             ondrop="handleDrop(event)">
+          <svg width="70" height="60" viewBox="0 0 24 24" fill="none" stroke="var(--navy-dark)" stroke-width="1.8" style="margin-bottom:8px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <h4>Drop Your Resume File Here</h4>
+          <p style="font-size:.84rem; color:var(--ink-sub); margin:6px 0 16px;">PDF, DOCX or TXT formats supported · Evaluated live against backend standards.</p>
+          <button class="btn-navy-pill" onclick="document.getElementById('resume-file').click()">Select Resume File</button>
+          <input type="file" id="resume-file" accept=".pdf,.docx,.txt" style="display:none;" onchange="handleFileSelect(this.files)">
+          <div id="file-result"></div>
+        </div>
+      </div>
+
+      <!-- PAGE 3: PROJECT LAB -->
+      <div id="page-projects" class="page-view">
+        <div style="background:var(--navy-dark); color:#fff; border-radius:16px; padding:24px 28px; margin-bottom:24px; display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <span class="eyebrow" style="color:var(--yellow-hero);">HANDS-ON LAB</span>
+            <h2 style="font-size:1.8rem; margin-top:4px; color:#fff;">Applied Skill Projects</h2>
+            <p style="color:rgba(255,255,255,.75); font-size:.88rem; margin-top:4px;">Peer pods & milestone projects that close verified technical gaps.</p>
+          </div>
+          <img src="images/team_table.jpg" alt="Team Lab" style="width:120px; height:80px; object-fit:cover; border-radius:10px; border:2px solid #fff;">
+        </div>
+
+        <div class="table-card" style="margin-bottom:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div>
+              <span class="eyebrow" style="color:var(--green-text);">RECOMMENDED FOR YOU</span>
+              <h3 style="font-size:1.2rem; margin-top:4px;">1. ML Model API with FastAPI & Docker</h3>
+              <p style="font-size:.86rem; color:var(--ink-sub); margin-top:6px;">Build and containerize a high-performance REST API predicting student readiness metrics. Closes containerization and API deployment gaps.</p>
+            </div>
+            <span style="background:var(--yellow-hero); font-weight:700; font-size:.76rem; padding:4px 10px; border-radius:8px;">2 WEEKS</span>
+          </div>
+          <button class="btn-navy-pill" style="margin-top:16px;" onclick="alert('Milestone initiated! Repo cloned to your local workspace.')">Start Project Milestone →</button>
+        </div>
+
+        <div class="table-card">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div>
+              <span class="eyebrow" style="color:var(--ink-sub);">UPCOMING LAB</span>
+              <h3 style="font-size:1.2rem; margin-top:4px;">2. RAG Assistant with Pinecone & LangChain</h3>
+              <p style="font-size:.86rem; color:var(--ink-sub); margin-top:6px;">Connect multi-lingual government PDF gazettes to a vector database for semantic guideline retrieval.</p>
+            </div>
+            <span style="background:var(--paper-bg); border:1px solid var(--border-light); font-size:.76rem; padding:4px 10px; border-radius:8px;">3 WEEKS</span>
+          </div>
+          <button class="btn-ghost" style="margin-top:16px;" onclick="alert('Prerequisites: Complete Milestone 1 first.')">Unlock Requirements</button>
+        </div>
+      </div>
+
+      <!-- PAGE 4: ROADMAP -->
+      <div id="page-roadmap" class="page-view">
+        <div style="background:var(--yellow-hero); border:2px solid var(--navy-dark); border-radius:16px; padding:28px; margin-bottom:24px;">
+          <span class="eyebrow" style="color:var(--navy-dark);">ROADMAP TIMELINE</span>
+          <h2 style="font-size:1.8rem; margin-top:4px;">Target Career Pathway</h2>
+          <p style="color:#3A4763; margin-top:6px; font-size:.9rem;">Synchronized directly with industry requirements and government skill standards.</p>
+        </div>
+
+        <div class="table-card" id="roadmap-stages-container">
+          <p style="color:var(--ink-sub); font-size:.88rem;">Loading live roadmap milestones…</p>
+        </div>
+      </div>
+
+      <!-- PAGE 5: SCHEME NEWSROOM -->
+      <div id="page-newsroom" class="page-view">
+        <div style="background:var(--navy-dark); color:#fff; border-radius:16px; padding:28px; margin-bottom:24px;">
+          <span class="eyebrow" style="color:var(--yellow-hero);">POLICY NEWSROOM</span>
+          <h2 style="font-size:1.8rem; margin-top:4px; color:#fff;">Government Guidelines & Grants</h2>
+          <p style="color:rgba(255,255,255,.75); margin-top:6px; font-size:.9rem;">Verified welfare schemes, capital tool grants, and RPL assessments pulled from official documents.</p>
+        </div>
+
+        <div id="newsroom-list-container">
+          <p style="color:var(--ink-sub); font-size:.88rem;">Fetching verified schemes…</p>
+        </div>
+      </div>
+
+      <!-- PAGE 6: BOT ASSISTANT (TELEGRAM / WHATSAPP SIMULATOR) -->
+      <div id="page-telegram" class="page-view">
+        <div style="background:#DCEBFA; border:1.5px solid var(--blue-text); border-radius:16px; padding:24px 28px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center;" id="bot-header-banner">
+          <div>
+            <span class="eyebrow" style="color:var(--blue-text);">MULTILINGUAL AI ASSISTANT</span>
+            <h2 style="font-size:1.8rem; margin-top:4px;" id="bot-channel-title">AI Skill Bot Hub (WhatsApp & Telegram)</h2>
+            <p style="color:#3A4763; margin-top:6px; font-size:.9rem;">Voice and text consultation powered by Sarvam AI & Pinecone RAG — fully synced to this workspace.</p>
+          </div>
+          <img src="images/cat_bot.jpg" alt="Bot Mascot" style="width:90px; height:90px; object-fit:cover; border-radius:50%; border:2px solid var(--navy-dark);">
+        </div>
+
+        <!-- Channel Switcher & External Direct Launch Links -->
+        <div class="channel-switcher">
+          <button class="channel-tab active whatsapp" id="tab-channel-wa" onclick="switchBotChannel('whatsapp')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.698c.966.527 1.777.813 2.796.813 3.182 0 5.767-2.586 5.768-5.766 0-3.18-2.586-5.768-5.768-5.768z"/></svg>
+            <span>WhatsApp Bot (+1-555-203-7186)</span>
+          </button>
+          
+          <button class="channel-tab telegram" id="tab-channel-tg" onclick="switchBotChannel('telegram')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+            <span>Telegram Bot (@KarmanSkillBot)</span>
+          </button>
+
+          <div style="margin-left:auto; display:flex; gap:8px;">
+            <a href="https://wa.me/15552037186?text=Namaste%20Project%20KARMAN" target="_blank" class="btn-whatsapp-pill" title="Open official WhatsApp Bot (+1-555-203-7186)">
+              <span>Open in WhatsApp ↗</span>
+            </a>
+            <a href="https://t.me/KarmanSkillBot" target="_blank" class="btn-telegram-pill" title="Open official Telegram Bot (@KarmanSkillBot)">
+              <span>Open in Telegram ↗</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="tg-shell" id="bot-shell">
+          <div class="tg-header" id="bot-shell-header">
+            <div class="tg-header-left">
+              <img src="images/cat_bot.jpg" alt="Avatar" class="tg-avatar-img">
+              <div>
+                <h5 style="font-size:.92rem; font-weight:700;" id="bot-status-name">WhatsApp AI Bot (+1-555-203-7186)</h5>
+                <span style="font-size:.72rem; color:var(--green-text); font-weight:600;" id="bot-status-indicator">● Online · Meta Cloud API & n8n Live</span>
+              </div>
+            </div>
+            <div style="display:flex; gap:6px;">
+              <span style="font-size:.74rem; background:#fff; border:1px solid var(--border-light); padding:3px 10px; border-radius:12px; font-family:var(--font-mono);">RAG v3.2</span>
+            </div>
+          </div>
+
+          <div class="tg-body" id="tg-chat-body">
+            <div class="tg-msg bot">Namaste 🙏 Tell me about a skill or trade you practice — even informally — and I will map it to an official NSQF code and government grant!</div>
+            <div class="tg-msg user">I've been fixing two-wheelers for 6 years, no certificate.</div>
+            <div class="tg-msg bot">That maps closely to <strong>NSQF Level 4 — Two &amp; Three Wheeler Service Technician (ASC/Q1401)</strong>. You qualify for fast-track <strong>Recognition of Prior Learning (RPL)</strong> and tool incentives!</div>
+          </div>
+
+          <div class="tg-input-bar">
+            <input id="tg-user-input" placeholder="Type your skill or query (e.g., 'Mujhe silai aati hai, machine grant chahiye')…" onkeypress="handleTgInputKey(event)">
+            <button class="btn-navy-pill" onclick="const input = document.getElementById('tg-user-input'); if (input.value.trim()) { sendTgUserMessage(input.value.trim()); input.value = ''; }">Send</button>
+          </div>
+
+          <div class="tg-quick-replies">
+            <button onclick="tgReply(this)">Mujhe silai aati hai, machine grant chahiye</button>
+            <button onclick="tgReply(this)">Start RPL technician certification</button>
+            <button onclick="tgReply(this)">Find district skill assessment camp</button>
+          </div>
+        </div>
+
+        <div class="tg-stat-row">
+          <div class="stat-mini"><div class="num" style="color:var(--blue-text);">312</div><div class="lbl">Active Conversations</div></div>
+          <div class="stat-mini"><div class="num" style="color:var(--green-text);">89%</div><div class="lbl">Resolved Without Human</div></div>
+          <div class="stat-mini"><div class="num" style="color:var(--navy-dark);">2.4s</div><div class="lbl">AI Response Time</div></div>
+        </div>
+      </div>
+
+      <!-- PAGE 7: RESUME BUILDER -->
+      <div id="page-builder" class="page-view">
+        <div style="background:#fff; border:1.5px solid var(--border-light); border-radius:16px; padding:28px; margin-bottom:24px;">
+          <span class="eyebrow" style="color:var(--navy-dark);">SKILL RESUME BUILDER</span>
+          <h2 style="font-size:1.8rem; margin-top:4px;">Generate an NSQF-Certified Skill Pass</h2>
+          <p style="color:var(--ink-sub); margin-top:6px; font-size:.9rem;">Connected to the backend PDF Generator — creates verifiable resumes with QP Codes and Grant Eligibility.</p>
+        </div>
+
+        <div class="builder-layout">
+          <div class="builder-form-card">
+            <span class="eyebrow" style="font-weight:700; display:block; margin-bottom:14px;">BENEFICIARY DETAILS</span>
+            
+            <div style="margin-bottom:12px;">
+              <label style="font-size:.78rem; font-weight:600; display:block; margin-bottom:4px;">Full Name</label>
+              <input class="field-input" id="builder-name" value="Sunita Devi">
+            </div>
+
+            <div style="margin-bottom:12px;">
+              <label style="font-size:.78rem; font-weight:600; display:block; margin-bottom:4px;">Phone Number</label>
+              <input class="field-input" id="builder-phone" value="919876543210">
+            </div>
+
+            <div style="margin-bottom:12px;">
+              <label style="font-size:.78rem; font-weight:600; display:block; margin-bottom:4px;">District & State</label>
+              <input class="field-input" id="builder-district" value="G.B. Nagar, Uttar Pradesh">
+            </div>
+
+            <div style="margin-bottom:12px;">
+              <label style="font-size:.78rem; font-weight:600; display:block; margin-bottom:4px;">Trade / Skill Specialization</label>
+              <select class="select-fake" id="builder-trade" style="width:100%;">
+                <option value="Tailoring & Sewing Machine Operator">Tailoring & Sewing Machine Operator (AMH/Q0301)</option>
+                <option value="Two Wheeler Service Technician">Two Wheeler Service Technician (ASC/Q1401)</option>
+                <option value="Solar PV Installer Technician">Solar PV Installer Technician (SGJ/Q0101)</option>
+              </select>
+            </div>
+
+            <div style="margin-bottom:12px;">
+              <label style="font-size:.78rem; font-weight:600; display:block; margin-bottom:4px;">Years of Practical Experience</label>
+              <input class="field-input" id="builder-exp" value="5 Years (Informal Trade)">
+            </div>
+
+            <div style="margin-bottom:18px;">
+              <label style="font-size:.78rem; font-weight:600; display:block; margin-bottom:4px;">Tools Owned</label>
+              <input class="field-input" id="builder-tools" value="Motorized Sewing Kit, Scissors">
+            </div>
+
+            <button class="btn-navy-pill" id="btn-export-resume" style="width:100%; justify-content:center; padding:12px;" onclick="exportResumePdf()">Export as Certified PDF →</button>
+          </div>
+
+          <div>
+            <span class="eyebrow" style="font-weight:700; display:block; margin-bottom:14px;">LIVE PREVIEW</span>
+            <div class="builder-preview">
+              <h3 id="pv-name">Sunita Devi</h3>
+              <span style="font-size:.76rem; color:var(--blue-text); font-weight:700;">NSQF Level 4 · Certified Artisan</span>
+              <div style="font-size:.74rem; color:var(--green-text); font-weight:600; margin-top:2px;">Linked to PM-AJAY Micro-Enterprise Grant (₹50,000)</div>
+              
+              <div class="pv-line" style="margin-top:16px;"></div>
+              <div class="pv-line short"></div>
+              
+              <div style="background:#FAF8F4; border:1px solid var(--border-light); border-radius:8px; padding:12px; margin-top:18px;">
+                <strong style="font-size:.8rem; display:block; margin-bottom:4px;">Qualification Pack Standards:</strong>
+                <div style="font-size:.76rem; color:var(--ink-sub);">• Single needle lockstitch operation</div>
+                <div style="font-size:.76rem; color:var(--ink-sub);">• Garment defect identification & audit</div>
+                <div style="font-size:.76rem; color:var(--ink-sub);">• Motorized maintenance & workshop safety</div>
+              </div>
+
+              <div class="pv-line" style="margin-top:16px;"></div>
+              <div class="pv-line short"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE 8: SETTINGS -->
+      <div id="page-settings" class="page-view">
+        <div style="background:#fff; border:1.5px solid var(--border-light); border-radius:16px; padding:28px; margin-bottom:24px;">
+          <span class="eyebrow" style="color:var(--navy-dark);">SETTINGS</span>
+          <h2 style="font-size:1.8rem; margin-top:4px;">Account Settings</h2>
+          <p style="color:var(--ink-sub); margin-top:6px; font-size:.9rem;">Manage your profile, notification triggers and connected channels.</p>
+        </div>
+
+        <div class="settings-grid" style="margin-bottom:20px;">
+          <div class="settings-row">
+            <div class="meta"><strong>Full Name</strong><span>Shown on your resume and roadmap ticket</span></div>
+            <input class="field-input" id="setting-full-name" style="max-width:220px;" value="Arjun Mehta" onchange="localStorage.setItem('karman_user', JSON.stringify({ name: this.value, identifier: 'arjun@karman.gov.in', role: 'student' })); initUserProfile();">
+          </div>
+          <div class="settings-row">
+            <div class="meta"><strong>Target Career Role</strong><span>Drives your readiness score and roadmap</span></div>
+            <select class="select-fake" style="max-width:220px;" onchange="changeRole(this.value)">
+              <option value="AI / ML Engineer">AI / ML Engineer</option>
+              <option value="Full-Stack Developer">Full-Stack Developer</option>
+              <option value="Data Engineer">Data Engineer</option>
+            </select>
+          </div>
+        </div>
+
+        <span class="eyebrow" style="font-weight:700; display:block; margin-bottom:10px;">NOTIFICATIONS & SYNC</span>
+        <div class="settings-grid">
+          <div class="settings-row">
+            <div class="meta"><strong>Roadmap Milestone Alerts</strong><span>Get notified when a new stage unlocks</span></div>
+            <button class="toggle on" onclick="this.classList.toggle('on')" aria-label="Toggle roadmap alerts"></button>
+          </div>
+          <div class="settings-row">
+            <div class="meta"><strong>Scheme Newsroom Digest</strong><span>Weekly summary of new grants & guidelines</span></div>
+            <button class="toggle on" onclick="this.classList.toggle('on')" aria-label="Toggle newsroom digest"></button>
+          </div>
+          <div class="settings-row">
+            <div class="meta"><strong>Bot Assistant Channel Sync</strong><span>Mirror bot conversations directly into this dashboard</span></div>
+            <button class="toggle on" onclick="this.classList.toggle('on')" aria-label="Toggle Bot sync"></button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+  </div>
+</div>
+
+<script src="api.js"></script>
+<script src="dashboard.js"></script>
+</body>
+</html>
