@@ -4,14 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="KARMAN Career Workspace — skill mapping, readiness scoring and roadmap dashboard.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23162035'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='18' font-weight='700' fill='%23F4C542' text-anchor='middle'%3EK%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="images/favicon_badge.png" type="image/png">
 <title>Dashboard — KARMAN</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="dashboard-page">
 
 <div class="dash-frame-wrapper">
   <div class="dashboard-3col">
@@ -24,8 +24,8 @@
       <div>
         <div class="sidebar-brand-row">
           <a class="sidebar-brand" href="index.html" style="cursor:pointer; text-decoration:none;" title="Back to home">
-            <span class="logo-badge">K</span>
-            <span>KARMAN</span>
+            <img src="images/karman_logo_horizontal_light.png" alt="KARMAN" class="sidebar-logo-full">
+            <img src="images/karman_emblem_gold.png" alt="KARMAN" class="sidebar-logo-collapsed">
           </a>
           <button class="btn-sidebar-toggle" id="btn-sidebar-toggle" onclick="toggleSidebar()" title="Collapse / Expand Sidebar (or drag edge slider)">
             <svg id="sidebar-toggle-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
@@ -223,28 +223,58 @@
         </div>
       </div>
 
-      <!-- PAGE 2: RESUME ANALYZER -->
+      <!-- PAGE 2: RESUME ANALYZER & ATS SCORER -->
       <div id="page-analyzer" class="page-view">
         <div style="background:var(--blue-badge); border:1.5px solid var(--navy-dark); border-radius:16px; padding:24px 28px; margin-bottom:24px; display:flex; justify-content:space-between; align-items:center;">
           <div>
-            <span class="eyebrow" style="color:var(--blue-text); font-weight:600;">RESUME ANALYZER</span>
-            <h2 style="font-size:1.8rem; margin-top:4px;">Resume Skill Gap & ATS Radar</h2>
-            <p style="color:var(--ink-sub); font-size:.88rem; margin-top:4px;">Live scanning against target industry roles via KARMAN ATS Engine.</p>
+            <span class="eyebrow" style="color:var(--blue-text); font-weight:600;">LIVE ATS ENGINE & SKILL GAP RADAR</span>
+            <h2 style="font-size:1.8rem; margin-top:4px;">Resume Analyzer & ATS Scorer</h2>
+            <p style="color:var(--ink-sub); font-size:.88rem; margin-top:4px;">Live evaluation against National Skills Qualification Framework (NSQF) & Tech Standards via backend.</p>
           </div>
           <img src="images/todo_sketch.jpg" alt="Checklist" style="width:110px; height:80px; object-fit:cover; border-radius:10px; border:2px solid var(--navy-dark);">
         </div>
 
-        <div class="table-card dropzone" id="dropzone" style="border-style:dashed; text-align:center; padding:36px;"
-             ondragover="event.preventDefault(); dropzone.classList.add('drag-over')"
-             ondragleave="dropzone.classList.remove('drag-over')"
-             ondrop="handleDrop(event)">
-          <svg width="70" height="60" viewBox="0 0 24 24" fill="none" stroke="var(--navy-dark)" stroke-width="1.8" style="margin-bottom:8px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-          <h4>Drop Your Resume File Here</h4>
-          <p style="font-size:.84rem; color:var(--ink-sub); margin:6px 0 16px;">PDF, DOCX or TXT formats supported · Evaluated live against backend standards.</p>
-          <button class="btn-navy-pill" onclick="document.getElementById('resume-file').click()">Select Resume File</button>
-          <input type="file" id="resume-file" accept=".pdf,.docx,.txt" style="display:none;" onchange="handleFileSelect(this.files)">
-          <div id="file-result"></div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:20px;">
+          <!-- 1. File Upload Dropzone -->
+          <div class="table-card dropzone" id="dropzone" style="border-style:dashed; text-align:center; padding:28px;"
+               ondragover="event.preventDefault(); dropzone.classList.add('drag-over')"
+               ondragleave="dropzone.classList.remove('drag-over')"
+               ondrop="handleDrop(event)">
+            <svg width="50" height="44" viewBox="0 0 24 24" fill="none" stroke="var(--navy-dark)" stroke-width="1.8" style="margin-bottom:8px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <h4 style="font-size:1.05rem; margin-bottom:4px;">Upload Resume File</h4>
+            <p style="font-size:.8rem; color:var(--ink-sub); margin:0 0 14px;">PDF, DOCX or TXT formats supported</p>
+            <button class="btn-navy-pill" type="button" onclick="document.getElementById('resume-file').click()">Select File</button>
+            <input type="file" id="resume-file" accept=".pdf,.docx,.txt" style="display:none;" onchange="handleFileSelect(this.files)">
+          </div>
+
+          <!-- 2. Or Paste Text Box with Quick Samples -->
+          <div class="table-card" style="padding:22px 24px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <h4 style="font-size:.98rem; font-weight:700;">Or Paste Resume Content / Bullets</h4>
+              <div style="display:flex; gap:6px;">
+                <button type="button" class="btn-ghost" style="padding:3px 8px; font-size:.72rem;" onclick="loadSampleResumeText('ai')">Sample AI/ML</button>
+                <button type="button" class="btn-ghost" style="padding:3px 8px; font-size:.72rem;" onclick="loadSampleResumeText('fullstack')">Sample FullStack</button>
+                <button type="button" class="btn-ghost" style="padding:3px 8px; font-size:.72rem;" onclick="loadSampleResumeText('tailor')">Sample Tailor</button>
+              </div>
+            </div>
+            <textarea id="analyzer-text-input" placeholder="Paste your skills, experience, and project descriptions here…" style="width:100%; height:90px; border:1.5px solid var(--border-light); border-radius:8px; padding:8px 12px; font-family:var(--font-body); font-size:.82rem; resize:vertical; box-sizing:border-box;">Developed machine learning models using Python and Scikit-learn. Familiar with SQL queries, Git version control, REST APIs, and Docker containers.</textarea>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <label for="analyzer-role-select" style="font-size:.78rem; font-weight:600;">Target Role:</label>
+                <select id="analyzer-role-select" class="select-fake" style="padding:4px 10px; font-size:.8rem;">
+                  <option value="AI / ML Engineer">AI / ML Engineer</option>
+                  <option value="Full-Stack Developer">Full-Stack Developer</option>
+                  <option value="Data Engineer">Data Engineer</option>
+                  <option value="Tailoring & Sewing">Tailoring & Sewing Operator</option>
+                  <option value="Two Wheeler Mechanic">Two Wheeler Service Tech</option>
+                </select>
+              </div>
+              <button class="btn-navy-pill" type="button" id="btn-run-analyzer" onclick="runManualTextAnalysis()" style="padding:7px 16px; font-size:.82rem;">Scan & Score ATS →</button>
+            </div>
+          </div>
         </div>
+
+        <div id="file-result"></div>
       </div>
 
       <!-- PAGE 3: PROJECT LAB -->
@@ -285,10 +315,17 @@
 
       <!-- PAGE 4: ROADMAP -->
       <div id="page-roadmap" class="page-view">
-        <div style="background:var(--yellow-hero); border:2px solid var(--navy-dark); border-radius:16px; padding:28px; margin-bottom:24px;">
-          <span class="eyebrow" style="color:var(--navy-dark);">ROADMAP TIMELINE</span>
-          <h2 style="font-size:1.8rem; margin-top:4px;">Target Career Pathway</h2>
-          <p style="color:#3A4763; margin-top:6px; font-size:.9rem;">Synchronized directly with industry requirements and government skill standards.</p>
+        <div style="background:var(--yellow-hero); border:2px solid var(--navy-dark); border-radius:16px; padding:26px 28px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <span class="eyebrow" style="color:var(--navy-dark); font-weight:700;">DYNAMIC CAREER PATHWAY</span>
+            <h2 style="font-size:1.8rem; margin-top:4px;" id="roadmap-page-title">Project Roadmap: AI / ML Engineer</h2>
+            <p style="color:#3A4763; margin-top:4px; font-size:.88rem;">Synchronized directly with industry standards & backend API.</p>
+          </div>
+          <div class="role-selector-pill-group" style="display:flex; gap:8px;">
+            <button class="btn-ghost active" id="btn-roadmap-ai" style="padding:6px 14px; font-size:.78rem; font-weight:600; background:var(--navy-dark); color:#fff;" onclick="selectRoadmapRole('AI / ML Engineer')">AI / ML</button>
+            <button class="btn-ghost" id="btn-roadmap-fs" style="padding:6px 14px; font-size:.78rem; font-weight:600;" onclick="selectRoadmapRole('Full-Stack Developer')">Full-Stack</button>
+            <button class="btn-ghost" id="btn-roadmap-de" style="padding:6px 14px; font-size:.78rem; font-weight:600;" onclick="selectRoadmapRole('Data Engineer')">Data Engineer</button>
+          </div>
         </div>
 
         <div class="table-card" id="roadmap-stages-container">

@@ -95,6 +95,77 @@ function changeRole(roleName) {
   if (nextTitle) nextTitle.innerText = data.nextTitle;
   if (nextDesc) nextDesc.innerText = data.nextDesc;
   if (nextProj) nextProj.innerText = data.nextProj;
+  // Also update roadmap
+  loadRoadmapData();
+}
+
+// Sample text loader for instant testing
+function loadSampleResumeText(type) {
+  const textInput = document.getElementById('analyzer-text-input');
+  const roleSelect = document.getElementById('analyzer-role-select');
+  if (!textInput) return;
+
+  if (type === 'ai') {
+    textInput.value = "Proficient in Python, SQL, and Git version control. Built and evaluated supervised machine learning models with Scikit-learn and Pandas. Created REST APIs with FastAPI, containerized microservices in Docker, and experimented with PyTorch neural networks and vector embeddings.";
+    if (roleSelect) roleSelect.value = "AI / ML Engineer";
+  } else if (type === 'fullstack') {
+    textInput.value = "Full-stack software developer with 2 years practical experience building modern web apps. Proficient in React, JavaScript (ES6+), HTML5, and Tailwind CSS. Built backend REST microservices with Node.js and FastAPI, managed relational data in PostgreSQL, and configured Docker container deployments.";
+    if (roleSelect) roleSelect.value = "Full-Stack Developer";
+  } else if (type === 'tailor') {
+    textInput.value = "Experienced tailor with 5+ years of apparel craftsmanship. Expert in single needle lockstitch machine operation, pattern drafting, fabric measurement, and garment defect inspection. Handled motorized sewing machines and apprentice training according to workshop safety standards.";
+    if (roleSelect) roleSelect.value = "Tailoring & Sewing";
+  }
+}
+
+// Manual Text Resume Analysis & Live ATS Scoring
+async function runManualTextAnalysis() {
+  const textInput = document.getElementById('analyzer-text-input');
+  const roleSelect = document.getElementById('analyzer-role-select');
+  const text = (textInput ? textInput.value : '').trim();
+  const targetRole = roleSelect ? roleSelect.value : currentRole;
+
+  if (!text) {
+    alert("Please paste some resume text or click one of the sample buttons!");
+    return;
+  }
+
+  const runBtn = document.getElementById('btn-run-analyzer');
+  if (runBtn) {
+    runBtn.disabled = true;
+    runBtn.innerText = "Analyzing live…";
+  }
+
+  const resultContainer = document.getElementById('file-result');
+  if (resultContainer) {
+    resultContainer.innerHTML = `
+      <div class="file-chip" style="margin-top:16px;">
+        <svg class="spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+        Scanning resume against ${targetRole} via KARMAN ATS Engine…
+      </div>
+    `;
+  }
+
+  try {
+    const roleKey = (rolePresets[targetRole] || {}).roleKey || 
+      (targetRole.includes('Full') ? 'full_stack_developer' : (targetRole.includes('Data') ? 'data_engineer' : 'ai_ml_engineer'));
+
+    const [analysis, ats] = await Promise.all([
+      KarmanAPI.analyzeResume(text, roleKey),
+      KarmanAPI.checkATS(text, targetRole)
+    ]);
+
+    renderAnalysisResults(analysis, ats, targetRole);
+  } catch (err) {
+    console.error("Analysis failed:", err);
+    if (resultContainer) {
+      resultContainer.innerHTML = `<div class="file-chip" style="background:#FDE8E8; color:#9B1C1C; margin-top:16px;">Analysis encountered an error. Please retry.</div>`;
+    }
+  } finally {
+    if (runBtn) {
+      runBtn.disabled = false;
+      runBtn.innerText = "Scan & Score ATS →";
+    }
+  }
 }
 
 // Resume Analyzer: File Drop & Live Backend Analysis
@@ -118,76 +189,139 @@ async function processUploadedResume(file) {
   const resultContainer = document.getElementById('file-result');
   if (resultContainer) {
     resultContainer.innerHTML = `
-      <div class="file-chip">
+      <div class="file-chip" style="margin-top:16px;">
         <svg class="spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
-        Analyzing ${file.name} against ${currentRole}…
+        Reading and analyzing ${file.name} against ${currentRole}…
       </div>
     `;
   }
 
-  // Read file snippet or default technical text
   let extractedText = "Python, SQL, Git, Data Structures, basic ML models.";
   try {
     extractedText = await file.text();
   } catch (readErr) {
-    // If binary PDF, use representative resume profile
     extractedText = "Developed web applications with React and Python. Knowledge of SQL, Git version control, Docker containers, and REST APIs.";
+  }
+
+  // Also put into text box for user review
+  const textInput = document.getElementById('analyzer-text-input');
+  if (textInput && extractedText.length > 20 && !extractedText.includes('\u0000')) {
+    textInput.value = extractedText.slice(0, 1000);
   }
 
   try {
     const roleKey = (rolePresets[currentRole] || {}).roleKey || 'ai_ml_engineer';
-    const analysis = await KarmanAPI.analyzeResume(extractedText, roleKey);
-    const ats = await KarmanAPI.checkATS(extractedText, currentRole);
+    const [analysis, ats] = await Promise.all([
+      KarmanAPI.analyzeResume(extractedText, roleKey),
+      KarmanAPI.checkATS(extractedText, currentRole)
+    ]);
 
-    if (resultContainer) {
-      resultContainer.innerHTML = `
-        <div style="margin-top:20px; text-align:left; background:#FAF8F4; border:1.5px solid var(--navy-dark); border-radius:12px; padding:20px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-            <div>
-              <span class="eyebrow" style="color:var(--green-text);">ATS RADAR SCAN COMPLETED</span>
-              <h3 style="font-size:1.3rem; margin-top:2px;">Readiness Score: ${analysis.career_readiness_score || 78}%</h3>
-            </div>
-            <div style="font-size:1.4rem; font-family:var(--font-serif); font-weight:700; color:var(--green-text); background:#fff; border:1.5px solid var(--border-light); padding:6px 14px; border-radius:10px;">
-              ATS: ${ats.ats_score || 82}/100
-            </div>
-          </div>
-          
-          <div style="margin-bottom:12px;">
-            <strong>Skills Matched (${(analysis.matched_skills || []).length}):</strong>
-            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:6px;">
-              ${(analysis.matched_skills || ['Python', 'SQL', 'Git']).map(s => `<span style="background:var(--green-badge); color:var(--green-text); font-size:.78rem; font-weight:600; padding:4px 10px; border-radius:12px;">✓ ${s}</span>`).join('')}
-            </div>
-          </div>
-
-          <div style="margin-bottom:14px;">
-            <strong>High-Impact Gaps to Close:</strong>
-            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:6px;">
-              ${(analysis.missing_skills || ['Docker', 'FastAPI Deployment']).map(s => `<span style="background:#FDE8E8; color:#9B1C1C; font-size:.78rem; font-weight:600; padding:4px 10px; border-radius:12px;">✕ ${s}</span>`).join('')}
-            </div>
-          </div>
-
-          <div style="background:#fff; border:1px solid var(--border-light); border-radius:8px; padding:12px; margin-top:10px;">
-            <span class="eyebrow" style="color:var(--blue-text);">RECOMMENDED NEXT LAB MOVE</span>
-            <div style="font-weight:700; margin-top:2px; font-size:.95rem;">${analysis.next_step_recommendation?.title || 'FastAPI Microservice Deployment with Docker'}</div>
-            <div style="font-size:.82rem; color:var(--ink-sub); margin-top:2px;">${analysis.next_step_recommendation?.gap_closed || 'Closes backend containerization gaps'}</div>
-          </div>
-        </div>
-      `;
-    }
-
-    // Also sync the readiness metrics on the Dashboard view
-    const heroPct = document.getElementById('hero-pct');
-    const scorePct = document.getElementById('score-pct');
-    const scoreBar = document.getElementById('score-bar');
-    if (heroPct) heroPct.innerText = `${analysis.career_readiness_score}%`;
-    if (scorePct) scorePct.innerText = `${analysis.career_readiness_score}%`;
-    if (scoreBar) scoreBar.style.width = `${analysis.career_readiness_score}%`;
+    renderAnalysisResults(analysis, ats, currentRole);
   } catch (err) {
     console.error("Resume analysis failed:", err);
     if (resultContainer) {
-      resultContainer.innerHTML = `<div class="file-chip" style="background:#FDE8E8; color:#9B1C1C;">Scan failed. Using offline profile.</div>`;
+      resultContainer.innerHTML = `<div class="file-chip" style="background:#FDE8E8; color:#9B1C1C; margin-top:16px;">Scan failed. Using offline profile.</div>`;
     }
   }
+}
+
+function renderAnalysisResults(analysis, ats, targetRole) {
+  const resultContainer = document.getElementById('file-result');
+  if (!resultContainer) return;
+
+  const atsScore = ats.ats_score || 82;
+  const readiness = analysis.career_readiness_score || 78;
+
+  resultContainer.innerHTML = `
+    <div style="margin-top:20px; text-align:left; background:#FAF8F4; border:2px solid var(--navy-dark); border-radius:14px; padding:24px; box-shadow:0 8px 24px rgba(22,32,53,.08);">
+      
+      <!-- Top Metrics Bar -->
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:16px; margin-bottom:18px; padding-bottom:16px; border-bottom:1px solid var(--border-light);">
+        <div>
+          <span class="eyebrow" style="color:var(--green-text); font-weight:700;">● ATS AUDIT & READINESS REPORT</span>
+          <h3 style="font-size:1.4rem; margin-top:2px; color:var(--navy-dark);">Target: ${targetRole}</h3>
+          <p style="font-size:.82rem; color:var(--ink-sub); margin-top:2px;">Standard: ${ats.nsqf_role || 'Industry Standard'} · ${ats.nsqf_level || 'NSQF Level 5'}</p>
+        </div>
+
+        <div style="display:flex; gap:12px; align-items:center;">
+          <div style="background:#fff; border:2px solid var(--navy-dark); border-radius:12px; padding:8px 18px; text-align:center;">
+            <div style="font-size:.7rem; font-family:var(--font-mono); text-transform:uppercase; color:var(--ink-sub);">ATS Score</div>
+            <div style="font-size:1.7rem; font-family:var(--font-serif); font-weight:700; color:${atsScore >= 75 ? 'var(--green-text)' : '#B4432A'};">${atsScore}<span style="font-size:1rem; color:var(--ink-sub);">/100</span></div>
+          </div>
+
+          <div style="background:var(--navy-dark); color:#fff; border-radius:12px; padding:8px 18px; text-align:center;">
+            <div style="font-size:.7rem; font-family:var(--font-mono); text-transform:uppercase; color:rgba(255,255,255,.7);">Readiness</div>
+            <div style="font-size:1.7rem; font-family:var(--font-serif); font-weight:700; color:var(--yellow-hero);">${readiness}%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Government Scheme / Grant Match -->
+      ${ats.recommended_scheme ? `
+      <div style="background:#EBF3FC; border:1px solid #B8D5F2; border-radius:10px; padding:12px 16px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <span style="font-size:.72rem; font-family:var(--font-mono); text-transform:uppercase; color:var(--blue-text); font-weight:700;">Matched Scheme / Grant:</span>
+          <div style="font-weight:700; font-size:.92rem; color:var(--navy-dark); margin-top:2px;">${ats.recommended_scheme}</div>
+        </div>
+        <button class="btn-navy-pill" type="button" style="padding:5px 12px; font-size:.75rem;" onclick="showPage('newsroom')">View Schemes →</button>
+      </div>` : ''}
+
+      <!-- Keywords Grid -->
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+        <div style="background:#fff; border:1px solid var(--border-light); border-radius:10px; padding:14px;">
+          <div style="font-weight:700; font-size:.85rem; color:var(--green-text); margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Matched Keywords (${(ats.matching_keywords || analysis.matched_skills || []).length})
+          </div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            ${(ats.matching_keywords || analysis.matched_skills || []).map(s => `
+              <span style="background:var(--green-badge); color:var(--green-text); font-size:.75rem; font-weight:600; padding:3px 9px; border-radius:10px;">✓ ${s}</span>
+            `).join('')}
+          </div>
+        </div>
+
+        <div style="background:#fff; border:1px solid var(--border-light); border-radius:10px; padding:14px;">
+          <div style="font-weight:700; font-size:.85rem; color:#9B1C1C; margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+            Missing High-Impact Keywords (${(ats.missing_keywords || analysis.missing_skills || []).length})
+          </div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            ${(ats.missing_keywords || analysis.missing_skills || []).map(s => `
+              <span style="background:#FDE8E8; color:#9B1C1C; font-size:.75rem; font-weight:600; padding:3px 9px; border-radius:10px;">+ ${s}</span>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+
+      <!-- Actionable ATS Recommendations -->
+      ${ats.recommendations && ats.recommendations.length > 0 ? `
+      <div style="background:#fff; border:1px solid var(--border-light); border-radius:10px; padding:14px; margin-bottom:16px;">
+        <span class="eyebrow" style="color:var(--navy-dark); font-weight:700;">ATS OPTIMIZATION RECOMMENDATIONS</span>
+        <ul style="margin:8px 0 0 16px; padding:0; font-size:.84rem; color:var(--ink-sub); line-height:1.6;">
+          ${ats.recommendations.map(r => `<li>${r}</li>`).join('')}
+        </ul>
+      </div>` : ''}
+
+      <!-- Next Recommended Lab Project -->
+      ${analysis.next_step_recommendation ? `
+      <div style="background:var(--paper-bg); border:1.5px solid var(--navy-dark); border-radius:10px; padding:14px; display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <span class="eyebrow" style="color:var(--blue-text); font-weight:700;">RECOMMENDED LAB PROJECT TO CLOSE GAPS</span>
+          <div style="font-weight:700; font-size:.95rem; margin-top:2px;">${analysis.next_step_recommendation.title}</div>
+          <div style="font-size:.8rem; color:var(--ink-sub); margin-top:2px;">${analysis.next_step_recommendation.gap_closed || 'Closes verified skill gaps'} · ${analysis.next_step_recommendation.estimated_time || '2 Weeks'}</div>
+        </div>
+        <button class="btn-navy-pill" type="button" style="padding:6px 14px; font-size:.78rem;" onclick="showPage('projects')">Start Project Milestone →</button>
+      </div>` : ''}
+    </div>
+  `;
+
+  // Sync overview metrics
+  const heroPct = document.getElementById('hero-pct');
+  const scorePct = document.getElementById('score-pct');
+  const scoreBar = document.getElementById('score-bar');
+  if (heroPct) heroPct.innerText = `${readiness}%`;
+  if (scorePct) scorePct.innerText = `${readiness}%`;
+  if (scoreBar) scoreBar.style.width = `${readiness}%`;
 }
 
 // Bot Assistant Simulation (Telegram / WhatsApp Dual Channel)
@@ -307,26 +441,66 @@ async function loadNewsroomData() {
   }
 }
 
-// Live Roadmap Stage Loader
-async function loadRoadmapData() {
+// Live Roadmap Stage Loader & Dynamic Role Switcher
+let currentRoadmapRole = 'AI / ML Engineer';
+
+function selectRoadmapRole(roleName) {
+  currentRoadmapRole = roleName;
+  const title = document.getElementById('roadmap-page-title');
+  if (title) title.innerText = `Project Roadmap: ${roleName}`;
+
+  const btnAi = document.getElementById('btn-roadmap-ai');
+  const btnFs = document.getElementById('btn-roadmap-fs');
+  const btnDe = document.getElementById('btn-roadmap-de');
+
+  [btnAi, btnFs, btnDe].forEach(btn => {
+    if (!btn) return;
+    btn.classList.remove('active');
+    btn.style.background = '';
+    btn.style.color = '';
+  });
+
+  if (roleName.includes('AI') && btnAi) {
+    btnAi.classList.add('active');
+    btnAi.style.background = 'var(--navy-dark)';
+    btnAi.style.color = '#fff';
+  } else if (roleName.includes('Full') && btnFs) {
+    btnFs.classList.add('active');
+    btnFs.style.background = 'var(--navy-dark)';
+    btnFs.style.color = '#fff';
+  } else if (roleName.includes('Data') && btnDe) {
+    btnDe.classList.add('active');
+    btnDe.style.background = 'var(--navy-dark)';
+    btnDe.style.color = '#fff';
+  }
+
+  loadRoadmapData(roleName);
+}
+
+async function loadRoadmapData(roleName = currentRoadmapRole) {
   const container = document.getElementById('roadmap-stages-container');
   if (!container) return;
 
+  let roleKey = 'ai_ml_engineer';
+  if (roleName.includes('Full') || roleName === 'full_stack_developer') roleKey = 'full_stack_developer';
+  else if (roleName.includes('Data') || roleName === 'data_engineer') roleKey = 'data_engineer';
+
   try {
-    const roadmap = await KarmanAPI.getRoadmap(currentRole === 'AI / ML Engineer' ? 'ai_ml_engineer' : 'full_stack_developer');
+    const roadmap = await KarmanAPI.getRoadmap(roleKey);
     if (roadmap && roadmap.roadmap_stages) {
       container.innerHTML = roadmap.roadmap_stages.map((stage, i) => `
         <div class="stage ${stage.status === 'completed' ? 'complete' : (stage.status === 'in_progress' ? 'progress' : 'upcoming')}">
           <div class="rail-dot"><span class="d"></span><span class="ln"></span></div>
           <div class="stage-card">
-            <div class="stage-top">
-              <span class="eyebrow" style="${stage.status === 'completed' ? 'color:var(--green-text);' : (stage.status === 'in_progress' ? 'color:var(--navy-dark); font-weight:700;' : '')}">
+            <div class="stage-top" style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="eyebrow" style="${stage.status === 'completed' ? 'color:var(--green-text); font-weight:700;' : (stage.status === 'in_progress' ? 'color:var(--navy-dark); font-weight:700;' : 'color:var(--ink-sub);')}">
                 ${stage.stage || `STAGE ${i+1}`}
               </span>
+              ${stage.duration ? `<span style="font-size:0.75rem; color:var(--ink-sub); font-weight:600; background:#FAF8F4; padding:2px 8px; border-radius:4px; border:1px solid var(--border-light);">${stage.duration}</span>` : ''}
             </div>
-            <h3 class="stage-title" style="font-size:1.1rem; margin-top:2px;">${stage.title || stage.stage}</h3>
-            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:8px;">
-              ${(stage.items || []).map(item => `<span style="background:#FAF8F4; border:1px solid var(--border-light); font-size:.78rem; padding:3px 8px; border-radius:6px;">${item}</span>`).join('')}
+            <h3 class="stage-title" style="font-size:1.1rem; margin-top:4px;">${stage.title || stage.stage}</h3>
+            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:10px;">
+              ${(stage.items || []).map(item => `<span style="background:#FAF8F4; border:1px solid var(--border-light); font-size:.78rem; padding:4px 9px; border-radius:6px; font-weight:500;">${item}</span>`).join('')}
             </div>
           </div>
         </div>
@@ -334,6 +508,7 @@ async function loadRoadmapData() {
     }
   } catch (err) {
     console.warn("Could not fetch remote roadmap:", err);
+    container.innerHTML = '<p style="color:var(--red-alert); font-size:.88rem; padding:16px;">Failed to load roadmap. Check connection to backend.</p>';
   }
 }
 

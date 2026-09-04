@@ -114,7 +114,8 @@ export default function PrototypeViewer() {
           <header className="site-header">
             <div className="site-header-inner">
               <div className="site-brand" onClick={() => setSiteView('landing')}>
-                <span className="logo-badge">K</span> KARMAN
+                <img src="/images/karman_icon.png" alt="KARMAN" className="w-8 h-8 object-contain" />
+                <span>KARMAN</span>
               </div>
               <nav className="site-nav">
                 <a href="#features">Features</a>
@@ -175,7 +176,10 @@ export default function PrototypeViewer() {
         <div id="view-login" className="site-view active">
           <div className="login-shell">
             <div className="login-card">
-              <div className="site-brand"><span className="logo-badge">K</span> KARMAN</div>
+              <div className="site-brand">
+                <img src="/images/karman_icon.png" alt="KARMAN" className="w-8 h-8 object-contain" />
+                <span>KARMAN</span>
+              </div>
               <p className="sub">Sign in to your career workspace</p>
 
               <form onSubmit={(e) => { e.preventDefault(); setSiteView('app'); }}>
@@ -218,8 +222,8 @@ export default function PrototypeViewer() {
 
                 <div>
                   <div className="sidebar-brand-row">
-                    <div className="sidebar-brand" onClick={() => setSiteView('landing')} style={{ cursor: 'pointer' }}>
-                      <span className="logo-badge">K</span>
+                    <div className="sidebar-brand" onClick={() => setSiteView('landing')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <img src="/images/karman_icon.png" alt="KARMAN" className="w-8 h-8 object-contain" />
                       {!isSidebarCollapsed && <span>KARMAN</span>}
                     </div>
                     <button 

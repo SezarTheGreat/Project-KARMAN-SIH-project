@@ -17,9 +17,7 @@ export default function WorkerNavbar() {
       <div className="flex flex-wrap items-center justify-between gap-4 pb-2.5 border-b border-[#3d2e49]/60">
         
         <Link to="/worker/dashboard" className="flex items-center gap-3">
-          <div className="bg-[#79b473]/20 border border-[#79b473]/40 p-2 rounded-xl text-[#79b473]">
-            <Wrench className="w-6 h-6" />
-          </div>
+          <img src="/images/karman_icon.png" alt="KARMAN Logo" className="w-8 h-8 object-contain" />
           <div>
             <h1 className="font-mono font-bold text-base text-[#79b473] tracking-wider flex items-center gap-2">
               KARMAN <span className="text-[10px] text-slate-300 font-sans border border-[#3d2e49] bg-[#241a2c] px-2 py-0.5 rounded">WORKER DESK</span>
